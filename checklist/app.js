@@ -5,7 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainDiv = document.querySelector('.main');
     const ul = document.querySelector('#invitedList');
   
-  
+        // Retrieve the list from localStorage
+        const list = JSON.parse(localStorage.getItem('guestList')) || [];
+
+        // Create list items for each name in the list
+        list.forEach(name => {
+            const li = createLI();
+            li.firstChild.textContent = name;
+            ul.appendChild(li);
+        });
   
     const div = document.createElement('div');
     const filterLabel = document.createElement('label');
@@ -53,18 +61,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const editButton = createElement('button', 'textContent', 'edit');
         const label = createElement('label', 'textContent', 'Confirm');
         const checkbox = createElement('input', 'type', 'checkbox');
-        storageNames();
         label.append(checkbox);
         li.append(span, label, editButton, removeButton);
+
+        if (input.value.trim() !== '') {
+        const list = JSON.parse(localStorage.getItem('guestList')) || [];
+        list.push(input.value);
+        localStorage.setItem('guestList', JSON.stringify(list));
+        }
         return li;
     }
   
-    function storageNames() {
-        const storedNames = localStorage.getItem('names');
-        let namesArr = storedNames ? JSON.parse(storedNames) : [];
-        namesArr.push(input.value);
-        localStorage.setItem('names', JSON.stringify(namesArr));
-    }
+    // function storageNames() {
+    //     const storedNames = localStorage.getItem('names');
+    //     let namesArr = storedNames ? JSON.parse(storedNames) : [];
+    //     namesArr.push(input.value);
+    //     localStorage.setItem('names', JSON.stringify(namesArr));
+    // }
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
