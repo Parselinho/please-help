@@ -4,13 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = form.querySelector('input');
     const mainDiv = document.querySelector('.main');
     const ul = document.querySelector('#invitedList');
-
-
-
+  
+  
+  
     const div = document.createElement('div');
     const filterLabel = document.createElement('label');
     const filterCheckBox = document.createElement('input');
-
+  
     filterLabel.textContent = 'Hide those who haven\'t responded';
     filterCheckBox.type = 'checkbox';
     div.append(filterLabel, filterCheckBox);
@@ -40,76 +40,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     })
-
-
-    // log the input value to new Li (created <li>), create label and checkbox aswell
-    createStorageList()
-    
     function createLI() {
         function createElement(elementName, prop, value) {
             const element = document.createElement(elementName);
             element[prop] = value;
             return element;
         }
-
+  
         const li = document.createElement('li');
         const span = createElement('span', 'textContent', input.value)
         const removeButton = createElement('button', 'textContent', 'remove');
         const editButton = createElement('button', 'textContent', 'edit');
         const label = createElement('label', 'textContent', 'Confirm');
         const checkbox = createElement('input', 'type', 'checkbox');
+        storageNames();
         label.append(checkbox);
-        // checkbox.addEventListener('change', () => {
-        //     label.textContent = checkbox.checked ? 'Confirmed' : 'Confirm';
-        //     label.append(checkbox);
-        //   });
         li.append(span, label, editButton, removeButton);
         return li;
     }
+  
+    function storageNames() {
+        const storedNames = localStorage.getItem('names');
+        let namesArr = storedNames ? JSON.parse(storedNames) : [];
+        namesArr.push(input.value);
+        localStorage.setItem('names', JSON.stringify(namesArr));
+    }
 
-    function getLocalGuestList() {
-        const guests = localStorage.getItem('guestList');
-        if (guests) {
-          return JSON.parse(guests);
-        }
-        return [];
-      }
-      
-      //create initial list from local storage
-      function createStorageList() {
-        const guestList = getLocalGuestList();
-        guestList.forEach(name => {
-          const li = createLI(name)
-          ul.appendChild(li);
-        });
-      }
-      //Remove guest from local storage
-      function removeGuestFromStorageList(localGuest) {
-        const guestList = getLocalGuestList();
-        const newList = guestList.filter(guest => guest != localGuest)
-        localStorage.setItem('guestList', JSON.stringify(newList));
-      }
-
-// add conditional for empty strings, duplicate names, numbers name
-// also add another textcontent to checkbox before checking it
     form.addEventListener('submit', (e) => {
-        const guestList = getLocalGuestList();
         e.preventDefault();
-        const text = input.value;
-        guestList.push(text)
-            localStorage.setItem('guestList', JSON.stringify(guestList));
         if (checkDuplicate() === true) {
-            alert('We have this name');
+            alert('fuck you we have this name');
         } else if (input.value === '') {
             alert('Enter Name')
         } else {
-            // guestList.push(text)
-            // localStorage.setItem('guestList', JSON.stringify(guestList));
-            const li = createLI(text);
-            ul.append(li);
-            input.value = '';
+        const li = createLI();
+        ul.append(li);
+        input.value = '';
         }
     })
+  
     function checkDuplicate() {
         let li = ul.children;
         for (let i =0; i < li.length; i++) {
@@ -164,4 +133,5 @@ document.addEventListener('DOMContentLoaded', () => {
             nameActions[action]();
         }
     });
-});
+  });
+  
